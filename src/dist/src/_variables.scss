@@ -1,0 +1,21 @@
+$prefix: "" !default;
+$separator: "\\:" !default;
+
+$sm: 769px !default;
+$md: 992px !default;
+$lg: 1200px !default;
+$xl: 1680px !default;
+$gutter: 0.5rem !default;
+
+$fieldMargin: 1rem !default;
+$fieldLabelMargin: 0.5rem !default;
+$helperTextMargin: 0.25rem !default;
+
+$spacer: 1rem !default;
+
+$breakpoints: (
+  "sm": $sm,
+  "md": $md,
+  "lg": $lg,
+  "xl": $xl,
+) !default;

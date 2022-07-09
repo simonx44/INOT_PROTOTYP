@@ -1,0 +1,157 @@
+body {
+  background-color: #e6e6e6;
+}
+
+.App-main {
+  margin: 100px 20px;
+}
+
+.customCard {
+  width: 25em;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+
+  &--img {
+    object-fit: contain;
+    min-width: 100%;
+    max-height: 250px;
+    margin: 10px 0;
+  }
+
+  .p-card-body {
+    overflow: hidden !important;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    .p-card-title {
+      overflow: hidden !important;
+      flex: 1;
+    }
+  }
+}
+
+.topbar {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  height: 4rem;
+  z-index: 997;
+  left: 0;
+  top: 0;
+  width: 100%;
+  padding: 0 2rem;
+  background-color: var(--surface-card);
+  transition: left 0.2s;
+  box-shadow: 0 3px 5px rgb(0 0 0 / 2%), 0 0 2px rgb(0 0 0 / 5%),
+    0 1px 4px rgb(0 0 0 / 8%);
+  &__brand {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    &__icon i {
+      font-size: x-large;
+    }
+    &__name {
+      margin: 0 5px;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    &__toggle {
+      :hover {
+        background-color: rgb(250, 247, 247);
+      }
+      i {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        border-radius: 50%;
+        width: 3rem;
+        height: 3rem;
+        cursor: pointer;
+        font-size: large;
+        // color: var(--text-color-secondary);
+        color: rgb(52, 52, 52);
+      }
+    }
+  }
+  &__toolbox {
+    :hover {
+      background-color: rgb(250, 247, 247);
+    }
+    i {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      border-radius: 50%;
+      width: 3rem;
+      height: 3rem;
+      cursor: pointer;
+      font-size: large;
+      color: var(--text-color-secondary);
+    }
+  }
+  .navItems {
+    height: 48px;
+    display: flex;
+    width: 80%;
+    justify-content: center;
+    align-items: flex-end;
+    list-style-type: none;
+    .active {
+      border-bottom: 3px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    li {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      font-size: large;
+      margin: 0 20px;
+      cursor: pointer;
+      padding-bottom: 5px;
+      border-bottom: 3px solid white;
+      i {
+        font-size: 20px;
+        margin-left: 5px;
+      }
+    }
+  }
+}
+
+.webcamViewContainer {
+
+  height: 78vh;
+}
+
+.webcamContainer {
+  position: relative;
+  height: 100%;
+}
+
+
+.AdsContainer {
+  background-color: #f9f9f9;
+display: flex;
+  text-align: center;
+  flex-direction: column;
+  justify-content: center;
+  justify-items: center;
+  border: 1px solid var(--primary-color);
+
+  margin: 10px 0 -13px 0;
+
+}
+.webcam{
+  position: absolute;
+  left: 10px;
+  right: 0;
+  textAlign: center;
+  zIndex: 9;
+  height: 100%;
+}
