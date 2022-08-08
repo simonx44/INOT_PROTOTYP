@@ -175,10 +175,11 @@ body {
   .imageContainer {
     flex: 1;
     display: block;
-
-    //overflow: hidden;
     position: relative;
-
+    float: left;
+    width: calc(100% - 20px);
+    margin: 10px;
+    cursor: pointer;
     &--spinner {
       z-index: 99;
       position: absolute;

@@ -6,7 +6,7 @@ const labelMap: Record<number, any> = {
   4: { name: "rock", id: 4, type: "elegantType" },
   5: { name: "jogginghose", id: 5, type: "athleticType" },
   6: { name: "joggingjacke", id: 6, type: "athleticType" },
-  7: { name: "shorts", id: 7, type: "athleticType" },
+  7: { name: "shorts", id: 7, type: "casualType" },
   8: { name: "tanktop", id: 8, type: "athleticType" },
   9: { name: "freizeithemd", id: 9, type: "casualType" },
   10: { name: "strohhut", id: 10, type: "casualType" },
@@ -99,9 +99,10 @@ const drawReact = (
     y * imgHeight - 10
   );
 
-  const reactWidth = width * 640;
-  const reactHeight = height * 460;
-  console.log(reactWidth, reactHeight);
+  console.log(width, height);
+
+  const reactWidth = (width - x) * imgWidth;
+  const reactHeight = (height - y) * imgHeight;
 
   ctx.rect(x * imgWidth, y * imgHeight, reactWidth, reactHeight);
   ctx.stroke();

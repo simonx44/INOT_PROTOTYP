@@ -41,7 +41,7 @@ const Gallery: FC<IProps> = (props) => {
       <Dialog
         header={`${detailView.image}`}
         visible={detailView.isOpen}
-        style={{ width: "50vw" }}
+        style={{ width: "90vw" }}
         modal
         onHide={() => updateDetailView({ isOpen: false, image: undefined })}
       >
@@ -57,7 +57,7 @@ const Gallery: FC<IProps> = (props) => {
                 className="customCard h-full"
                 title={`Image: ${img}`}
                 subTitle=""
-                footer={footer(img)}
+                footer={footer(imagePath)}
                 header={() => (
                   <img alt={img} src={imagePath} className="customCard--img" />
                 )}

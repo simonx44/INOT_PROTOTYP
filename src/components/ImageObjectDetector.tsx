@@ -59,7 +59,10 @@ const ImageObjectDetector: FC<IProps & SettingsReduxProps> = ({
       // 4. TODO - Make Detections
       const img = tf.browser.fromPixels(image);
 
-      const resized = tf.image.resizeBilinear(img, [640, 480]);
+      const resizeFactor = imgWidth / 640;
+      const resizeHeight = Math.round(imgHeight / resizeFactor);
+
+      const resized = tf.image.resizeBilinear(img, [640, resizeHeight]);
       const casted = resized.cast("int32");
       const expanded = casted.expandDims(0);
       const obj: any = await net.executeAsync(expanded);
