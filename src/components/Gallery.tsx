@@ -2,6 +2,7 @@ import { FC, useMemo, useState } from "react";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
+import ImageObjectDetector from "./ImageObjectDetector";
 
 interface IProps {}
 
@@ -44,7 +45,7 @@ const Gallery: FC<IProps> = (props) => {
         modal
         onHide={() => updateDetailView({ isOpen: false, image: undefined })}
       >
-        Content
+        <ImageObjectDetector img={detailView.image} />
       </Dialog>
 
       <div className="grid">
