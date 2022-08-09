@@ -172,13 +172,25 @@ body {
     }
   }
 
+  .highlighter {
+    background: #3f51b55c;
+    border: 1px dashed var(--primary-color);
+    z-index: 1000;
+    position: absolute;
+  }
+  .boxText {
+    z-index: 1000;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px dashed var(--primary-color);
+    color: var(--primary-color);
+  }
+
   .imageContainer {
-    flex: 1;
-    display: block;
+    display: inline-block;
     position: relative;
-    float: left;
-    width: calc(100% - 20px);
     margin: 10px;
+    margin: 0 auto;
     cursor: pointer;
     &--spinner {
       z-index: 99;
@@ -195,7 +207,7 @@ body {
 
   .img {
     display: inline;
-    position: absolute;
+
     margin-left: auto;
     margin-right: auto;
 

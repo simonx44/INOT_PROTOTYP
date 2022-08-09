@@ -39,6 +39,7 @@ const TheHeaderBar: React.FC<IProps> = ({ mode, updateMode }) => {
             <li
               className={route.mode === mode ? "active" : ""}
               onClick={() => updateMode(route.mode)}
+              key={route.mode}
             >
               <span>{route.name}</span>
               <i className={`pi ${route.icon}`}></i>

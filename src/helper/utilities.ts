@@ -73,6 +73,42 @@ export const determinePassangerType = (objects: Array<objectValidation>) => {
   return { objects, type: finalType };
 };
 
+const drawBox = (
+  boxes: Array<number>,
+  className: string,
+  score: number,
+  imgWidth: number,
+  imgHeight: number
+) => {
+  const box = document.getElementById("imageContainer");
+
+  const [y, x, height, width] = boxes;
+
+  const reactWidth = (width - x) * imgWidth;
+  const reactHeight = (height - y) * imgHeight;
+
+  const scoreInPercentage = Math.floor(score * 100);
+
+  const p = document.createElement("div");
+  p.setAttribute("class", "boxText");
+  p.innerText = className.toUpperCase() + " (" + scoreInPercentage + "%)";
+  p.style.marginLeft = -100 + "px;";
+  p.style.marginTop = 0 + "px;";
+  p.style.top = y * imgHeight - 20 + "px";
+  p.style.left = x * imgWidth + "px";
+  p.style.width = reactWidth + "px";
+
+  const highlighter = document.createElement("div");
+  highlighter.setAttribute("class", "highlighter");
+  highlighter.style.left = x * imgWidth + "px";
+  highlighter.style.top = y * imgHeight + "px";
+  highlighter.style.width = reactWidth + "px";
+  highlighter.style.height = reactHeight + "px";
+
+  box?.appendChild(highlighter);
+  box?.appendChild(p);
+};
+
 const drawReact = (
   ctx: any,
   boxes: any,
@@ -99,13 +135,29 @@ const drawReact = (
     y * imgHeight - 10
   );
 
-  console.log(width, height);
+  console.log(y, x, height, width);
 
   const reactWidth = (width - x) * imgWidth;
   const reactHeight = (height - y) * imgHeight;
 
   ctx.rect(x * imgWidth, y * imgHeight, reactWidth, reactHeight);
   ctx.stroke();
+};
+
+export const clearBoxes = () => {
+  const boxes = document.getElementsByClassName(
+    "highlighter"
+  ) as unknown as Array<HTMLElement>;
+  const texts = document.getElementsByClassName(
+    "boxText"
+  ) as unknown as Array<HTMLElement>;
+
+  for (let element of boxes) {
+    element.remove();
+  }
+  for (let element of texts) {
+    element.remove();
+  }
 };
 
 // Define a drawing function
@@ -115,8 +167,7 @@ export const detectObjects = (
   scores: any,
   threshold: any,
   imgWidth: number,
-  imgHeight: number,
-  ctx: any
+  imgHeight: number
 ) => {
   const objects: Array<objectValidation> = [];
 
@@ -132,7 +183,8 @@ export const detectObjects = (
       const recognizedObject = { object: className, confidence: score, type };
       objects.push(recognizedObject);
 
-      drawReact(ctx, boxes[i], className, score, imgWidth, imgHeight);
+      //drawReact(ctx, boxes[i], className, score, imgWidth, imgHeight);
+      drawBox(boxes[i], className, score, imgWidth, imgHeight);
     }
   }
   return objects;

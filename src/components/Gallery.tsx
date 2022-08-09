@@ -9,6 +9,7 @@ interface IProps {}
 function importAll(r: any) {
   let images = {};
   r.keys().map((item: any) => {
+    console.log(item);
     //@ts-ignore
     images[item.replace("./", "")] = r(item);
   });
@@ -22,7 +23,7 @@ const Gallery: FC<IProps> = (props) => {
   });
   const images = useMemo(() => {
     const imagesLoaded: Record<string, any> = importAll(
-      require.context("../images", false, /.jpg/)
+      require.context("../images", false, /.jpg|.png|.jpeg/)
     );
     return imagesLoaded;
   }, []);
@@ -35,6 +36,8 @@ const Gallery: FC<IProps> = (props) => {
       onClick={() => updateDetailView({ isOpen: true, image: image })}
     />
   );
+
+  console.log(Object.keys(images).map((el) => el));
 
   return (
     <div>
@@ -52,7 +55,7 @@ const Gallery: FC<IProps> = (props) => {
         {Object.keys(images).map((img) => {
           const imagePath = images[img] ?? "";
           return (
-            <div className="col-12 md:col-6 lg:col-4 xl:col-3">
+            <div className="col-12 md:col-6 lg:col-4 xl:col-3" key={img}>
               <Card
                 className="customCard h-full"
                 title={`Image: ${img}`}

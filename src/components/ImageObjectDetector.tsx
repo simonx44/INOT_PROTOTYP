@@ -4,6 +4,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import {
+  clearBoxes,
   detectObjects,
   determinePassangerType,
   getAdvertismentByPassengerType,
@@ -30,74 +31,70 @@ const ImageObjectDetector: FC<IProps & SettingsReduxProps> = ({
   const initalizeModel = async () => {
     updateLoading(true);
     const net = await tf.loadGraphModel(MODEL_PATH);
+    if (!isLoading) detect(net);
 
-    detect(net);
+    //drawBox();
   };
 
   const detect = async (net: any) => {
     // Check data is available
+
     if (
-      typeof imageRef.current !== "undefined" &&
-      imageRef.current !== null &&
+      typeof imageRef.current == "undefined" ||
+      imageRef.current == null ||
       // @ts-ignore
-      canvasRef != null
+      canvasRef == null ||
+      isLoading
     ) {
-      // @ts-ignore
-      const image: HTMLImageElement = imageRef.current;
-
-      const imgWidth = image.width;
-      const imgHeight = image.height;
-
-      // @ts-ignore
-      canvasRef.current.width = imgWidth;
-      // @ts-ignore
-      canvasRef.current.height = imgHeight;
-
-      // @ts-ignore
-      const ctx = canvasRef.current.getContext("2d");
-
-      // 4. TODO - Make Detections
-      const img = tf.browser.fromPixels(image);
-
-      const resizeFactor = imgWidth / 640;
-      const resizeHeight = Math.round(imgHeight / resizeFactor);
-
-      const resized = tf.image.resizeBilinear(img, [640, resizeHeight]);
-      const casted = resized.cast("int32");
-      const expanded = casted.expandDims(0);
-      const obj: any = await net.executeAsync(expanded);
-
-      //0 boxes
-
-      const boxes = await obj[6].array();
-      const classes = await obj[4].array();
-      const scores = await obj[5].array();
-
-      // console.log(await obj[6].array());
-
-      requestAnimationFrame(() => {
-        const objects = detectObjects(
-          boxes[0],
-          classes[0],
-          scores[0],
-          confidence / 100,
-          imgWidth,
-          imgHeight,
-          ctx
-        );
-
-        const result = determinePassangerType(objects);
-        console.log(result);
-        updateResult(result);
-      });
-
-      tf.dispose(img);
-      tf.dispose(resized);
-      tf.dispose(casted);
-      tf.dispose(expanded);
-      tf.dispose(obj);
-      updateLoading(false);
+      return;
     }
+    clearBoxes();
+    // @ts-ignore
+    const image: HTMLImageElement = imageRef.current;
+
+    const imgWidth = image.width;
+    const imgHeight = image.height;
+
+    // 4. TODO - Make Detections
+    const img = tf.browser.fromPixels(image);
+
+    const resizeFactor = imgWidth / 640;
+    const resizeHeight = Math.round(imgHeight / resizeFactor);
+
+    const resized = tf.image.resizeBilinear(img, [640, resizeHeight]);
+    const casted = resized.cast("int32");
+    const expanded = casted.expandDims(0);
+
+    const obj: any = await net.executeAsync(expanded);
+
+    const boxes = await obj[6].array();
+    const classes = await obj[4].array();
+    const scores = await obj[5].array();
+
+    console.log("detection finshed");
+
+    requestAnimationFrame(() => {
+      const objects = detectObjects(
+        boxes[0],
+        classes[0],
+        scores[0],
+        confidence / 100,
+        imgWidth,
+        imgHeight
+      );
+
+      const result = determinePassangerType(objects);
+      console.log(result);
+      updateResult(result);
+      console.log("end");
+    });
+
+    tf.dispose(img);
+    tf.dispose(resized);
+    tf.dispose(casted);
+    tf.dispose(expanded);
+    tf.dispose(obj);
+    updateLoading(false);
   };
 
   useEffect(() => {
@@ -113,7 +110,7 @@ const ImageObjectDetector: FC<IProps & SettingsReduxProps> = ({
 
   return (
     <div className="imageDetectionContainer">
-      <div className="imageContainer">
+      <div className="imageContainer" id="imageContainer">
         {isLoading && (
           <div className="imageContainer--spinner">
             <ProgressSpinner />
@@ -127,8 +124,6 @@ const ImageObjectDetector: FC<IProps & SettingsReduxProps> = ({
           alt={""}
           src={img}
         />
-
-        <canvas ref={canvasRef} className={"canvas"} />
       </div>
       {result && (
         <div className="adsContainer">

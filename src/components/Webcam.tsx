@@ -93,8 +93,7 @@ const WebcamView: FC<IProps & SettingsReduxProps> = ({ confidence }) => {
           scores[0],
           confidence / 100,
           videoWidth,
-          videoHeight,
-          ctx
+          videoHeight
         );
       });
 
