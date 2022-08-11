@@ -5,6 +5,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import {
   clearBoxes,
+  CustomerSegements,
   detectObjects,
   determinePassangerType,
   getAdvertismentByPassengerType,
@@ -108,6 +109,16 @@ const ImageObjectDetector: FC<IProps & SettingsReduxProps> = ({
     }
   }, [result]);
 
+  const mapCustomerSegements = (label: CustomerSegements) => {
+    const labels = {
+      [CustomerSegements.athleticType]: "Athletic Passenger",
+      [CustomerSegements.casualType]: "Casual Passenger",
+      [CustomerSegements.elegantType]: "Business/Elegant Passenger",
+    };
+
+    return labels[label];
+  };
+
   return (
     <div className="imageDetectionContainer">
       <div className="imageContainer" id="imageContainer">
@@ -129,7 +140,7 @@ const ImageObjectDetector: FC<IProps & SettingsReduxProps> = ({
         <div className="adsContainer">
           <div className="adsContainer--detectionResult">
             <h2> Passenger Type:</h2>
-            <span>{result.type.name.toUpperCase()}</span>
+            <b className="text-xl">{mapCustomerSegements(result.type.name)}</b>
             <div className="objects">
               <h4>Detected Objects</h4>
 
@@ -138,11 +149,10 @@ const ImageObjectDetector: FC<IProps & SettingsReduxProps> = ({
                 <Column field="confidence" header="Confidence"></Column>
               </DataTable>
             </div>
-
-            <div>
-              <h4>Advertisement</h4>
-              <img className={"adsImage"} alt={""} src={advertismentImage} />
-            </div>
+          </div>
+          <div className="adsImageContainer">
+            <h2>Advertisment</h2>
+            <img className={"adsImage"} alt={""} src={advertismentImage} />
           </div>
         </div>
       )}

@@ -13,15 +13,19 @@ const labelMap: Record<number, any> = {
   11: { name: "tshirt", id: 11, type: "casualType" },
 };
 
+export enum CustomerSegements {
+  "elegantType" = "elegantType",
+  "athleticType" = "athleticType",
+  "casualType" = "casualType",
+}
+
 type objectValidation = {
   object: string;
-  type: "elegantType" | "athleticType" | "casualType";
+  type: CustomerSegements;
   confidence: number;
 };
 
-export const getAdvertismentByPassengerType = (
-  type: "elegantType" | "athleticType" | "casualType"
-) => {
+export const getAdvertismentByPassengerType = (type: CustomerSegements) => {
   const randomValue = Math.random();
 
   if (type === "athleticType") {
@@ -42,17 +46,24 @@ export const determinePassangerType = (objects: Array<objectValidation>) => {
   let athleticType = 0;
   let casualType = 0;
 
+  if (objects.length === 0) {
+    return {
+      objects,
+      type: { name: CustomerSegements.casualType, score: casualType },
+    };
+  }
+
   objects.forEach((el) => {
     switch (el.type) {
-      case "athleticType":
+      case CustomerSegements.athleticType:
         athleticType += el.confidence;
         break;
 
-      case "elegantType":
+      case CustomerSegements.elegantType:
         elegantType += el.confidence;
         break;
 
-      case "casualType":
+      case CustomerSegements.casualType:
         casualType += el.confidence;
         break;
 
@@ -167,7 +178,8 @@ export const detectObjects = (
   scores: any,
   threshold: any,
   imgWidth: number,
-  imgHeight: number
+  imgHeight: number,
+  drawBoxes = true
 ) => {
   const objects: Array<objectValidation> = [];
 
@@ -183,9 +195,20 @@ export const detectObjects = (
       const recognizedObject = { object: className, confidence: score, type };
       objects.push(recognizedObject);
 
-      //drawReact(ctx, boxes[i], className, score, imgWidth, imgHeight);
-      drawBox(boxes[i], className, score, imgWidth, imgHeight);
+      if (drawBoxes) {
+        //drawReact(ctx, boxes[i], className, score, imgWidth, imgHeight);
+        drawBox(boxes[i], className, score, imgWidth, imgHeight);
+      }
     }
   }
   return objects;
 };
+
+export function importAllImages(r: any) {
+  let images = {};
+  r.keys().map((item: any) => {
+    //@ts-ignore
+    images[item.replace("./", "")] = r(item);
+  });
+  return images;
+}
