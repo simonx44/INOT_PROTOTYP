@@ -3,7 +3,13 @@ import { SelectButton } from "primereact/selectbutton";
 import { Card } from "primereact/card";
 import Webcam from "react-webcam";
 import * as tf from "@tensorflow/tfjs";
-import { detectObjects } from "../helper/utilities";
+import {
+  clearBoxes,
+  CustomerSegements,
+  detectObjects,
+  determinePassangerType,
+  mapCustomerSegements,
+} from "../helper/utilities";
 import { InputNumber } from "primereact/inputnumber";
 import { InputSwitch } from "primereact/inputswitch";
 import { Toast } from "primereact/toast";
@@ -12,6 +18,8 @@ import ImageObjectDetector from "./ImageObjectDetector";
 import { Slider } from "primereact/slider";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { connector, SettingsReduxProps } from "../state/settings";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 
 interface IProps {}
 
@@ -19,6 +27,7 @@ const WebcamView: FC<IProps & SettingsReduxProps> = ({ confidence }) => {
   const [mode, updateMode] = useState(1);
   const [isWebcamAvailable, updateWebcamState] = useState(true);
   const [isReloading, updateReloading] = useState(false);
+  const [result, updateResult] = useState<any>();
   const [liveMode, updateLiveMode] = useState<{
     detectionsPerSecond: number;
     isActive: boolean;
@@ -35,7 +44,6 @@ const WebcamView: FC<IProps & SettingsReduxProps> = ({ confidence }) => {
   });
   const toastRef = useRef(null);
   const webcamRef = useRef(null);
-  const canvasRef = useRef(null);
   const counterRef = useRef(null);
   const MODEL_PATH = "/model/model.json";
 
@@ -45,64 +53,54 @@ const WebcamView: FC<IProps & SettingsReduxProps> = ({ confidence }) => {
   ];
 
   const detect = async (net: any) => {
-    // Check data is available
     if (
-      typeof webcamRef.current !== "undefined" &&
-      webcamRef.current !== null &&
+      typeof webcamRef.current == "undefined" ||
+      webcamRef.current == null ||
       // @ts-ignore
-      webcamRef.current.video.readyState === 4
+      webcamRef.current.video.readyState !== 4
     ) {
-      // Get Video Properties
-      // @ts-ignore
-      const video = webcamRef.current.video;
-      // @ts-ignore
-      const videoWidth = webcamRef.current.video.videoWidth;
-      // @ts-ignore
-      const videoHeight = webcamRef.current.video.videoHeight;
-
-      // Set video width
-      // @ts-ignore
-      webcamRef.current.video.width = videoWidth;
-      // @ts-ignore
-      webcamRef.current.video.height = videoHeight;
-
-      // Set canvas height and width
-      // @ts-ignore
-      canvasRef.current.width = videoWidth;
-      // @ts-ignore
-      canvasRef.current.height = videoHeight;
-
-      // @ts-ignore
-      const ctx = canvasRef.current.getContext("2d");
-
-      // 4. TODO - Make Detections
-      const img = tf.browser.fromPixels(video);
-      const resized = tf.image.resizeBilinear(img, [640, 480]);
-      const casted = resized.cast("int32");
-      const expanded = casted.expandDims(0);
-      const obj: any = await net.executeAsync(expanded);
-
-      const boxes = await obj[6].array();
-      const classes = await obj[4].array();
-      const scores = await obj[5].array();
-
-      requestAnimationFrame(() => {
-        detectObjects(
-          boxes[0],
-          classes[0],
-          scores[0],
-          confidence / 100,
-          videoWidth,
-          videoHeight
-        );
-      });
-
-      tf.dispose(img);
-      tf.dispose(resized);
-      tf.dispose(casted);
-      tf.dispose(expanded);
-      tf.dispose(obj);
+      return;
     }
+
+    // @ts-ignore
+    const video: HTMLVideoElement = webcamRef.current.video;
+    // @ts-ignore
+    const videoWidth = video.videoWidth;
+    // @ts-ignore
+    const videoHeight = video.videoHeight;
+
+    const resizeFactor = videoWidth / 640;
+    const resizeHeight = Math.round(videoHeight / resizeFactor);
+
+    const img = tf.browser.fromPixels(video);
+    const resized = tf.image.resizeBilinear(img, [640, resizeHeight]);
+    const casted = resized.cast("int32");
+    const expanded = casted.expandDims(0);
+    const obj: any = await net.executeAsync(expanded);
+
+    const boxes = await obj[6].array();
+    const classes = await obj[4].array();
+    const scores = await obj[5].array();
+
+    requestAnimationFrame(() => {
+      const objects = detectObjects(
+        boxes[0],
+        classes[0],
+        scores[0],
+        confidence / 100,
+        video.offsetWidth,
+        video.offsetHeight
+      );
+      const result = determinePassangerType(objects);
+      console.log(result);
+      updateResult(result);
+    });
+
+    tf.dispose(img);
+    tf.dispose(resized);
+    tf.dispose(casted);
+    tf.dispose(expanded);
+    tf.dispose(obj);
   };
 
   const startLiveDetection = async () => {
@@ -215,7 +213,7 @@ const WebcamView: FC<IProps & SettingsReduxProps> = ({ confidence }) => {
     ]);
 
     updateLiveMode({ ...liveMode, isActive: false, interval: undefined });
-    setTimeout(() => clearCanvas(), 3000);
+    clearBoxes();
   };
 
   const analyseImage = () => {
@@ -266,13 +264,6 @@ const WebcamView: FC<IProps & SettingsReduxProps> = ({ confidence }) => {
     return liveMode.isActive || screenshot.isAnalysisActive ? true : false;
   }, [liveMode, screenshot, isWebcamAvailable]);
 
-  const clearCanvas = () => {
-    const canvas: HTMLCanvasElement = canvasRef.current as any;
-    const context = canvas.getContext("2d");
-
-    context?.clearRect(0, 0, canvas.width, canvas.height);
-  };
-
   return (
     <div className="flex">
       <Toast ref={toastRef} position="bottom-right" />
@@ -280,7 +271,7 @@ const WebcamView: FC<IProps & SettingsReduxProps> = ({ confidence }) => {
       {!screenshot.isAnalysisActive ? (
         <div className="webcamViewContainer">
           {!isWebcamAvailable && !isReloading && (
-            <div className="flex flex-column justify-content-center align-items-center">
+            <div className="flex flex-1 flex-column justify-content-center align-items-center">
               <h3>Webcam not found</h3>
               <Button
                 className="p-button-outlined"
@@ -292,21 +283,21 @@ const WebcamView: FC<IProps & SettingsReduxProps> = ({ confidence }) => {
           )}
 
           {!isReloading ? (
-            <Webcam
-              ref={webcamRef}
-              muted={true}
-              className={"webcam"}
-              onUserMedia={onWebcamAvailable}
-              onUserMediaError={onWebcamError}
-            />
+            <div className="imageContainer" id="imageContainer">
+              <Webcam
+                ref={webcamRef}
+                muted={true}
+                className={isWebcamAvailable ? "webcam" : "hidden"}
+                onUserMedia={onWebcamAvailable}
+                onUserMediaError={onWebcamError}
+              />
+            </div>
           ) : (
-            <div className="flex flex-column justify-content-center align-items-center">
+            <div className="flex flex-1 flex-column justify-content-center align-items-center">
               <h3>Trying to connect</h3>
               <ProgressSpinner />
             </div>
           )}
-
-          <canvas ref={canvasRef} className={"webcam"} style={{ zIndex: 90 }} />
         </div>
       ) : (
         <div className="webcamViewContainer">
@@ -430,9 +421,43 @@ const WebcamView: FC<IProps & SettingsReduxProps> = ({ confidence }) => {
                   <Button
                     disabled={settingsDisabled}
                     className="p-button-outlined mt-4"
-                    onClick={clearCanvas}
+                    onClick={clearBoxes}
                     label="Clear boxes"
                   />
+                  {liveMode.isActive && (
+                    <div className="adsContainerWeb">
+                      <div className="text-lg">
+                        <span>
+                          {" "}
+                          Passenger Type:{" "}
+                          <b className="text-xl type">
+                            {mapCustomerSegements(
+                              result ? result.type.name : "-"
+                            )}
+                          </b>
+                        </span>
+
+                        <div className="objects">
+                          <h4>Detected Objects</h4>
+
+                          <DataTable
+                            value={result ? result.objects : []}
+                            responsiveLayout="scroll"
+                            className="objectsTable"
+                          >
+                            <Column
+                              field="object"
+                              header="Object name"
+                            ></Column>
+                            <Column
+                              field="confidence"
+                              header="Confidence"
+                            ></Column>
+                          </DataTable>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

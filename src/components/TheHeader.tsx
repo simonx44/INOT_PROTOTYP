@@ -1,5 +1,8 @@
-import React from "react";
+import { Dialog } from "primereact/dialog";
+import { InputNumber } from "primereact/inputnumber";
+import React, { useState } from "react";
 import { ApplicationMode } from "../App";
+import Settings from "./Settings";
 
 interface IProps {
   mode: ApplicationMode;
@@ -7,6 +10,8 @@ interface IProps {
 }
 
 const TheHeaderBar: React.FC<IProps> = ({ mode, updateMode }) => {
+  const [showSettings, updateSettings] = useState(false);
+
   const routes = [
     {
       name: "Image Collection",
@@ -47,6 +52,23 @@ const TheHeaderBar: React.FC<IProps> = ({ mode, updateMode }) => {
           ))}
         </div>
       </div>
+      <div>
+        <i
+          className="pi pi-cog"
+          style={{ fontSize: "24px" }}
+          onClick={() => updateSettings(true)}
+        ></i>
+      </div>
+
+      <Dialog
+        visible={showSettings}
+        header={"Settings"}
+        onHide={() => updateSettings(false)}
+        breakpoints={{ "960px": "75vw", "640px": "100vw" }}
+        style={{ width: "50vw" }}
+      >
+        <Settings />
+      </Dialog>
     </header>
   );
 };

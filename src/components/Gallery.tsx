@@ -4,7 +4,7 @@ import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import ImageObjectDetector from "./ImageObjectDetector";
 import PerformanceMessurement from "./PerformanceMessurement";
-import { importAllImages } from "../helper/utilities";
+import { importImages } from "../helper/utilities";
 
 interface IProps {}
 
@@ -15,9 +15,7 @@ const Gallery: FC<IProps> = (props) => {
     image: undefined,
   });
   const images = useMemo(() => {
-    const imagesLoaded: Record<string, any> = importAllImages(
-      require.context("../images", false, /.jpg|.png|.jpeg/)
-    );
+    const imagesLoaded: Record<string, any> = importImages();
     return imagesLoaded;
   }, []);
 
@@ -30,6 +28,8 @@ const Gallery: FC<IProps> = (props) => {
     />
   );
 
+  console.log(Object.keys(images));
+
   return (
     <div className="relative">
       <div style={{ position: "fixed", bottom: "20px", right: "10px" }}>
@@ -41,7 +41,7 @@ const Gallery: FC<IProps> = (props) => {
       </div>
       <Dialog
         header={
-          !performanceMode ? `${detailView.image}` : "Performance Messurement"
+          !performanceMode ? `Detect Passenger Type` : "Performance Messurement"
         }
         visible={detailView.isOpen || performanceMode}
         style={{ width: performanceMode ? "50vw" : "90vw" }}
@@ -59,13 +59,13 @@ const Gallery: FC<IProps> = (props) => {
       </Dialog>
 
       <div className="grid">
-        {Object.keys(images).map((img) => {
+        {Object.keys(images).map((img, index) => {
           const imagePath = images[img] ?? "";
           return (
             <div className="col-12 md:col-6 lg:col-4 xl:col-3" key={img}>
               <Card
                 className="customCard h-full"
-                title={`Image: ${img}`}
+                title={`Image: ${img} : ${index + 1}`}
                 subTitle=""
                 footer={footer(imagePath)}
                 header={() => (

@@ -9,6 +9,7 @@ import {
   detectObjects,
   determinePassangerType,
   getAdvertismentByPassengerType,
+  mapCustomerSegements,
 } from "../helper/utilities";
 import { connector, SettingsReduxProps } from "../state/settings";
 
@@ -109,16 +110,6 @@ const ImageObjectDetector: FC<IProps & SettingsReduxProps> = ({
     }
   }, [result]);
 
-  const mapCustomerSegements = (label: CustomerSegements) => {
-    const labels = {
-      [CustomerSegements.athleticType]: "Athletic Passenger",
-      [CustomerSegements.casualType]: "Casual Passenger",
-      [CustomerSegements.elegantType]: "Business/Elegant Passenger",
-    };
-
-    return labels[label];
-  };
-
   return (
     <div className="imageDetectionContainer">
       <div className="imageContainer" id="imageContainer">
@@ -144,7 +135,11 @@ const ImageObjectDetector: FC<IProps & SettingsReduxProps> = ({
             <div className="objects">
               <h4>Detected Objects</h4>
 
-              <DataTable value={result.objects} responsiveLayout="scroll">
+              <DataTable
+                value={result.objects}
+                responsiveLayout="scroll"
+                className="objectsTable"
+              >
                 <Column field="object" header="Object name"></Column>
                 <Column field="confidence" header="Confidence"></Column>
               </DataTable>

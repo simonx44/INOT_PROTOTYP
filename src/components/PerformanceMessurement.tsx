@@ -1,12 +1,13 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { preclassifiedData } from "../images/validation";
+
 import {
   CustomerSegements,
   detectObjects,
   determinePassangerType,
-  importAllImages,
+  getPreclassifiedData,
+  importImages,
 } from "../helper/utilities";
 import { connector, SettingsReduxProps } from "../state/settings";
 import ConfusionMatrix from "./ConfusionMatrix";
@@ -39,15 +40,15 @@ const PerformanceMessurement: FC<IProps & SettingsReduxProps> = ({
   };
 
   const images = useMemo(() => {
-    return importAllImages(
-      require.context("../images", false, /.jpg|.png|.jpeg/)
-    ) as Record<string, string>;
+    return importImages() as Record<string, any>;
   }, []);
 
   const initalizeProcess = async () => {
     if (typeof imageRef.current == "undefined" || imageRef.current == null) {
       return;
     }
+    const preclassifiedData = getPreclassifiedData();
+    console.log(preclassifiedData);
     updateProcessingMode(true);
     const MODEL_PATH = "/model/model.json";
     const net = await tf.loadGraphModel(MODEL_PATH);
@@ -65,10 +66,9 @@ const PerformanceMessurement: FC<IProps & SettingsReduxProps> = ({
       currentCounter.innerText = counter + "";
       counter++;
       const customerSegement = await determineCustomerSegement(net);
-      const expected = (preclassifiedData as Record<string, string>)[
-        img
-      ] as CustomerSegements;
+      const expected = preclassifiedData[img];
 
+      console.log([customerSegement as CustomerSegements, expected]);
       detectionResults.push([customerSegement as CustomerSegements, expected]);
     }
 

@@ -125,24 +125,53 @@ const ConfusionMatrix: FC<IProps> = ({ results }) => {
           })}
         </div>
       </div>
-      <div className="flex justify-content-center align-items-center">
-        <table className="metrics">
-          <tr>
-            <th>Class</th>
-            <th className="label">Precision</th>
-            <th className="label">Recall</th>
-            <th className="label">F1-score</th>
-          </tr>
 
-          {Object.keys(metrics).map((m) => (
-            <tr key={m}>
-              <td className="label">{m}</td>
-              <td>{metrics[m].precision}</td>
-              <td>{metrics[m].recall}</td>
-              <td>{metrics[m].f1}</td>
+      <div className="mb-4">
+        <div>
+          <h4 className="text-center">Confusion Matrix result</h4>
+          <div className="flex justify-content-center align-items-center">
+            <table className="metrics">
+              <tr>
+                <th>Class</th>
+                <th className="label">TP</th>
+                <th className="label">TN</th>
+                <th className="label">FP</th>
+                <th className="label">FN</th>
+              </tr>
+
+              {Object.keys(metrics).map((m) => (
+                <tr key={m}>
+                  <td className="label">{m}</td>
+                  <td>{metrics[m].performance.tp}</td>
+                  <td>{metrics[m].performance.tn}</td>
+                  <td>{metrics[m].performance.fp}</td>
+                  <td>{metrics[m].performance.fn}</td>
+                </tr>
+              ))}
+            </table>
+          </div>
+        </div>
+
+        <div className="flex flex-column justify-content-center align-items-center">
+          <h4 className="text-center">Confusion Matrix result</h4>
+          <table className="metrics">
+            <tr>
+              <th>Class</th>
+              <th className="label">Precision</th>
+              <th className="label">Recall</th>
+              <th className="label">F1-score</th>
             </tr>
-          ))}
-        </table>
+
+            {Object.keys(metrics).map((m) => (
+              <tr key={m}>
+                <td className="label">{m}</td>
+                <td>{metrics[m].precision}</td>
+                <td>{metrics[m].recall}</td>
+                <td>{metrics[m].f1}</td>
+              </tr>
+            ))}
+          </table>
+        </div>
       </div>
     </div>
   );

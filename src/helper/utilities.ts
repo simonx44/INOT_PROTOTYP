@@ -1,3 +1,6 @@
+import { preclassifiedData } from "../images/validation/validation";
+import { preclassifiedData as collectionData } from "../images/collection/validation";
+
 // Define our labelmap
 const labelMap: Record<number, any> = {
   1: { name: "jacket", id: 1, type: "elegantType" },
@@ -98,7 +101,7 @@ const drawBox = (
   const reactWidth = (width - x) * imgWidth;
   const reactHeight = (height - y) * imgHeight;
 
-  const scoreInPercentage = Math.floor(score * 100);
+  const scoreInPercentage = Math.round(score * 100);
 
   const p = document.createElement("div");
   p.setAttribute("class", "boxText");
@@ -118,41 +121,6 @@ const drawBox = (
 
   box?.appendChild(highlighter);
   box?.appendChild(p);
-};
-
-const drawReact = (
-  ctx: any,
-  boxes: any,
-  className: string,
-  score: number,
-  imgWidth: number,
-  imgHeight: number
-) => {
-  const [y, x, height, width] = boxes;
-
-  // Set styling
-  // @ts-ignore
-  ctx.strokeStyle = "black";
-  ctx.lineWidth = 5;
-  ctx.fillStyle = "black";
-  ctx.font = "30px Arial";
-
-  // DRAW!!
-  ctx.beginPath();
-  // @ts-ignore
-  ctx.fillText(
-    className + " - " + Math.round(score * 100) / 100,
-    x * imgWidth,
-    y * imgHeight - 10
-  );
-
-  console.log(y, x, height, width);
-
-  const reactWidth = (width - x) * imgWidth;
-  const reactHeight = (height - y) * imgHeight;
-
-  ctx.rect(x * imgWidth, y * imgHeight, reactWidth, reactHeight);
-  ctx.stroke();
 };
 
 export const clearBoxes = () => {
@@ -183,6 +151,10 @@ export const detectObjects = (
 ) => {
   const objects: Array<objectValidation> = [];
 
+  console.log(threshold);
+
+  clearBoxes();
+
   for (let i = 0; i <= boxes.length; i++) {
     if (boxes[i] && classes[i] && scores[i] > threshold) {
       // Extract variables
@@ -196,7 +168,6 @@ export const detectObjects = (
       objects.push(recognizedObject);
 
       if (drawBoxes) {
-        //drawReact(ctx, boxes[i], className, score, imgWidth, imgHeight);
         drawBox(boxes[i], className, score, imgWidth, imgHeight);
       }
     }
@@ -204,7 +175,7 @@ export const detectObjects = (
   return objects;
 };
 
-export function importAllImages(r: any) {
+function importAllImages(r: any) {
   let images = {};
   r.keys().map((item: any) => {
     //@ts-ignore
@@ -212,3 +183,31 @@ export function importAllImages(r: any) {
   });
   return images;
 }
+
+export function importImages() {
+  const imagesLoaded1: Record<string, any> = importAllImages(
+    require.context("../images/validation", false, /.jpg|.png|.jpeg|.webp/)
+  );
+  const imagesLoaded2: Record<string, any> = importAllImages(
+    require.context("../images/training", false, /.jpg|.png|.jpeg|.webp/)
+  );
+
+  return { ...imagesLoaded1, ...imagesLoaded2 };
+}
+
+export const getPreclassifiedData = () => {
+  return { ...preclassifiedData, ...collectionData } as Record<
+    string,
+    CustomerSegements
+  >;
+};
+
+export const mapCustomerSegements = (label: CustomerSegements) => {
+  const labels = {
+    [CustomerSegements.athleticType]: "Athletic Passenger",
+    [CustomerSegements.casualType]: "Casual Passenger",
+    [CustomerSegements.elegantType]: "Business/Elegant Passenger",
+  };
+
+  return labels[label];
+};

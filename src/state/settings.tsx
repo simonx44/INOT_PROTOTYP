@@ -7,7 +7,7 @@ export interface SettingsState {
 }
 
 const initialState: SettingsState = {
-  confidence: 70,
+  confidence: 80,
 };
 
 export const settingsSlice = createSlice({
@@ -17,6 +17,7 @@ export const settingsSlice = createSlice({
     updateConfidence: (state, action) => {
       // eslint-disable-next-line no-param-reassign
       state.confidence = action.payload;
+      localStorage.setItem("confidence", action.payload);
     },
   },
 });
