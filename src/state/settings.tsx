@@ -7,7 +7,7 @@ export interface SettingsState {
 }
 
 const initialState: SettingsState = {
-  confidence: 80,
+  confidence: 60,
 };
 
 export const settingsSlice = createSlice({
