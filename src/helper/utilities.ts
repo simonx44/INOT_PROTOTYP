@@ -3,17 +3,23 @@ import { preclassifiedData as collectionData } from "../images/collection/valida
 
 // Define our labelmap
 const labelMap: Record<number, any> = {
-  1: { name: "jacket", id: 1, type: "elegantType" },
-  2: { name: "krawatte", id: 2, type: "elegantType" },
-  3: { name: "kleid", id: 3, type: "elegantType" },
-  4: { name: "rock", id: 4, type: "elegantType" },
-  5: { name: "jogginghose", id: 5, type: "athleticType" },
-  6: { name: "joggingjacke", id: 6, type: "athleticType" },
-  7: { name: "shorts", id: 7, type: "casualType" },
-  8: { name: "tanktop", id: 8, type: "athleticType" },
-  9: { name: "freizeithemd", id: 9, type: "casualType" },
-  10: { name: "strohhut", id: 10, type: "casualType" },
-  11: { name: "tshirt", id: 11, type: "casualType" },
+  1: { name: "Jogginghose", id: 1, type: "athlethicType" },
+  2: { name: "Joggingjacke", id: 2, type: "athlethicType" },
+  3: { name: "Shorts", id: 3, type: "athlethicType" }, 
+  4: { name: "Tanktop", id: 4, type: "athlethicType" },
+  5: { name: "Handtasche", id: 5, type: "elegantType" },
+  6: { name: "Jacket/Blazer", id: 6, type: "elegantType" },
+  7: { name: "Kleid", id: 7, type: "elegantType" },
+  8: { name: "Mantel", id: 8, type: "elegantType" },
+  9: { name: "Rock", id: 9, type: "elegantType" },
+  10: { name: "Krawatte", id: 10, type: "elegantType" },
+  11: { name: "Freizeithemd", id: 11, type: "casualType" },
+  12: { name: "Hoodie", id: 12, type: "casualType" },
+  13: { name: "HoseCasual", id: 13, type: "casualType" },
+  14: { name: "JackeCasual", id: 14, type: "casualType" },
+  15: { name: "Strohhut", id: 15, type: "casualType" },
+  16: { name: "Sweatshirt", id: 16, type: "casualType" },
+  17: { name: "TShirt", id: 17, type: "casualType" }
 };
 
 export enum CustomerSegements {
