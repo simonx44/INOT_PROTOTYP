@@ -128,6 +128,7 @@ const PerformanceMessurement: FC<IProps & SettingsReduxProps> = ({
 
     const resizeFactor = imgWidth / 640;
     const resizeHeight = Math.round(imgHeight / resizeFactor);
+ 
 
     const resized = tf.image.resizeBilinear(img, [640, resizeHeight]);
     const casted = resized.cast("int32");
@@ -135,9 +136,11 @@ const PerformanceMessurement: FC<IProps & SettingsReduxProps> = ({
 
     const obj: any = await net.executeAsync(expanded);
 
-    const boxes = await obj[6].array();
-    const classes = await obj[4].array();
-    const scores = await obj[5].array();
+    const boxes = await obj[4].array();
+    
+    const classes = await obj[2].array();
+    const scores = await obj[7].array();
+
 
     const objects = detectObjects(
       boxes[0],

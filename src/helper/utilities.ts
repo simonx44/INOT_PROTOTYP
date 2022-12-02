@@ -1,18 +1,18 @@
 import { preclassifiedData } from "../images/validation/validation";
-import { preclassifiedData as collectionData } from "../images/collection/validation";
+/* import { preclassifiedData as collectionData } from "../images/collection/validation"; */
 
 // Define our labelmap
 const labelMap: Record<number, any> = {
-  1: { name: "Jogginghose", id: 1, type: "athlethicType" },
-  2: { name: "Joggingjacke", id: 2, type: "athlethicType" },
-  3: { name: "Shorts", id: 3, type: "athlethicType" }, 
-  4: { name: "Tanktop", id: 4, type: "athlethicType" },
+  1: { name: "Jogginghose", id: 1, type: "athleticType" },
+  2: { name: "Joggingjacke", id: 2, type: "athleticType" },
+  3: { name: "Shorts", id: 3, type: "athleticType" }, 
+  4: { name: "Tanktop", id: 4, type: "athleticType" },
   5: { name: "Handtasche", id: 5, type: "elegantType" },
   6: { name: "Jacket/Blazer", id: 6, type: "elegantType" },
-  7: { name: "Kleid", id: 7, type: "elegantType" },
-  8: { name: "Mantel", id: 8, type: "elegantType" },
-  9: { name: "Rock", id: 9, type: "elegantType" },
-  10: { name: "Krawatte", id: 10, type: "elegantType" },
+  7: { name: "Krawatte", id: 7, type: "elegantType" },
+  8: { name: "Kleid", id: 8, type: "elegantType" },
+  9: { name: "Mantel", id: 9, type: "elegantType" },
+  10: { name: "Rock", id: 10, type: "elegantType" },
   11: { name: "Freizeithemd", id: 11, type: "casualType" },
   12: { name: "Hoodie", id: 12, type: "casualType" },
   13: { name: "HoseCasual", id: 13, type: "casualType" },
@@ -194,18 +194,25 @@ export function importImages() {
   const imagesLoaded1: Record<string, any> = importAllImages(
     require.context("../images/validation", false, /.jpg|.png|.jpeg|.webp/)
   );
-  const imagesLoaded2: Record<string, any> = importAllImages(
+/*  const imagesLoaded2: Record<string, any> = importAllImages(
     require.context("../images/training", false, /.jpg|.png|.jpeg|.webp/)
-  );
+  ); */
+/*  return { ...imagesLoaded1, ...imagesLoaded2 }; */
 
-  return { ...imagesLoaded1, ...imagesLoaded2 };
+return imagesLoaded1;
 }
 
 export const getPreclassifiedData = () => {
+    return preclassifiedData as Record<
+    string,
+    CustomerSegements
+  >;
+  /*
   return { ...preclassifiedData, ...collectionData } as Record<
     string,
     CustomerSegements
   >;
+  */
 };
 
 export const mapCustomerSegements = (label: CustomerSegements) => {

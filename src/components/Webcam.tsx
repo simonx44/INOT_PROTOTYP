@@ -78,9 +78,9 @@ const WebcamView: FC<IProps & SettingsReduxProps> = ({ confidence }) => {
     const expanded = casted.expandDims(0);
     const obj: any = await net.executeAsync(expanded);
 
-    const boxes = await obj[6].array();
-    const classes = await obj[4].array();
-    const scores = await obj[5].array();
+    const boxes = await obj[4].array();
+    const classes = await obj[2].array();
+    const scores = await obj[7].array();
 
     requestAnimationFrame(() => {
       const objects = detectObjects(
