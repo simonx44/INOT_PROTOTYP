@@ -73,7 +73,7 @@ const FileUploader = () => {
           onUpload={onUpload}
           multiple={false}
           accept="image/*"
-          maxFileSize={1000000}
+          maxFileSize={1000000000}
           emptyTemplate={emptyTemplate}
           uploadHandler={customBase64Uploader}
           customUpload={true}

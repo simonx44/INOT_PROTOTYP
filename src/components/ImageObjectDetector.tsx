@@ -65,13 +65,13 @@ const ImageObjectDetector: FC<IProps & SettingsReduxProps> = ({
 
     const resized = tf.image.resizeBilinear(img, [640, resizeHeight]);
     const casted = resized.cast("int32");
-    const expanded = casted.expandDims(0); 
+    const expanded = casted.expandDims(0);
 
     const obj: any = await net.executeAsync(expanded);
 
     //0-1
     const boxes = await obj[4].array();
-    
+
     const classes = await obj[2].array();
     const scores = await obj[7].array();
 
@@ -80,9 +80,6 @@ const ImageObjectDetector: FC<IProps & SettingsReduxProps> = ({
     // classes: 2
     // boxes: 4
     // source 7
-
-
-   
 
     console.log("detection finshed");
 
@@ -157,7 +154,7 @@ const ImageObjectDetector: FC<IProps & SettingsReduxProps> = ({
             </div>
           </div>
           <div className="adsImageContainer">
-            <h2>Advertisment</h2>
+            <h2>Advertisement</h2>
             <img className={"adsImage"} alt={""} src={advertismentImage} />
           </div>
         </div>

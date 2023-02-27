@@ -5,7 +5,7 @@ import { preclassifiedData } from "../images/validation/validation";
 const labelMap: Record<number, any> = {
   1: { name: "Jogginghose", id: 1, type: "athleticType" },
   2: { name: "Joggingjacke", id: 2, type: "athleticType" },
-  3: { name: "Shorts", id: 3, type: "athleticType" }, 
+  3: { name: "Shorts", id: 3, type: "athleticType" },
   4: { name: "Tanktop", id: 4, type: "athleticType" },
   5: { name: "Handtasche", id: 5, type: "elegantType" },
   6: { name: "Jacket/Blazer", id: 6, type: "elegantType" },
@@ -19,7 +19,7 @@ const labelMap: Record<number, any> = {
   14: { name: "JackeCasual", id: 14, type: "casualType" },
   15: { name: "Strohhut", id: 15, type: "casualType" },
   16: { name: "Sweatshirt", id: 16, type: "casualType" },
-  17: { name: "TShirt", id: 17, type: "casualType" }
+  17: { name: "TShirt", id: 17, type: "casualType" },
 };
 
 export enum CustomerSegements {
@@ -117,6 +117,8 @@ const drawBox = (
   p.style.top = y * imgHeight - 20 + "px";
   p.style.left = x * imgWidth + "px";
   p.style.width = reactWidth + "px";
+  p.style.zIndex = 1000 + scoreInPercentage + "";
+  p.style.background = `rgba(255, 255, 255, ${0.5 + scoreInPercentage / 3})`;
 
   const highlighter = document.createElement("div");
   highlighter.setAttribute("class", "highlighter");
@@ -124,6 +126,10 @@ const drawBox = (
   highlighter.style.top = y * imgHeight + "px";
   highlighter.style.width = reactWidth + "px";
   highlighter.style.height = reactHeight + "px";
+  highlighter.style.zIndex = 1000 + scoreInPercentage + "";
+  highlighter.style.background = `rgba(63, 81, 181, ${
+    scoreInPercentage / 100 / 3
+  })`;
 
   box?.appendChild(highlighter);
   box?.appendChild(p);
@@ -194,19 +200,16 @@ export function importImages() {
   const imagesLoaded1: Record<string, any> = importAllImages(
     require.context("../images/validation", false, /.jpg|.png|.jpeg|.webp/)
   );
-/*  const imagesLoaded2: Record<string, any> = importAllImages(
+  /*  const imagesLoaded2: Record<string, any> = importAllImages(
     require.context("../images/training", false, /.jpg|.png|.jpeg|.webp/)
   ); */
-/*  return { ...imagesLoaded1, ...imagesLoaded2 }; */
+  /*  return { ...imagesLoaded1, ...imagesLoaded2 }; */
 
-return imagesLoaded1;
+  return imagesLoaded1;
 }
 
 export const getPreclassifiedData = () => {
-    return preclassifiedData as Record<
-    string,
-    CustomerSegements
-  >;
+  return preclassifiedData as Record<string, CustomerSegements>;
   /*
   return { ...preclassifiedData, ...collectionData } as Record<
     string,
