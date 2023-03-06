@@ -52,6 +52,7 @@ const FileUploader = () => {
 
   const customBase64Uploader = async (event: any) => {
     // convert file to base64 encoded
+    updateImg(undefined);
     const file = event.files[0];
     const reader = new FileReader();
     let blob = await fetch(file.objectURL).then((r) => r.blob()); //blob:url
@@ -81,7 +82,7 @@ const FileUploader = () => {
         />
 
         {img && (
-          <div className="mt-5 ">
+          <div className="mt-5 py-3 bg-white">
             <ImageObjectDetector img={img} />
           </div>
         )}
